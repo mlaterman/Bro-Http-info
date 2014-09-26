@@ -1,0 +1,10 @@
+http-info.bro
+
+Bro script to gather extra data about http connections.
+
+Original version written by Phillipa Gill (2008)
+
+Script updated to compile against Bro 2.3
+
+Updated version includes a new record type for logging (logging not completly implemented in this version)
+

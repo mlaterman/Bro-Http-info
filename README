@@ -12,4 +12,4 @@ http-info2.bro
 
 New version of script that only collects data not present in bro's default http.log and puts it into a new output log
 
-
+added module functionality to v2 (not tested yet)

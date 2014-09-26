@@ -8,3 +8,8 @@ Script updated to compile against Bro 2.3
 
 Updated version includes a new record type for logging (logging not completly implemented in this version)
 
+http-info2.bro
+
+New version of script that only collects data not present in bro's default http.log and puts it into a new output log
+
+

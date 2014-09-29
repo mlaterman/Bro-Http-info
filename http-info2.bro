@@ -1,16 +1,7 @@
-#TODO end timstamps, measured in req/reply->c$start+duration or message-end?
-#TODO log output & record deletion where?
-module HTTPInfo
-@load base/frameworks/notice/weird
-@load base/protocols/http
-
-#Capture http packets on standard ports (80 & 443)
-redef capture_filters += {["tcp"] = "tcp"};
-redef restrict_filters += {["HTTP"] = "port 80 or port 443"};
+module HTTPINFO;
 
 export {
-    #define a new log for output
-    redef enum Log::ID += {LOG};
+    redef enum Log::ID += { LOG };
 
     type http_info: record {
         uid:            string  &log &default="ERROR";
@@ -30,7 +21,7 @@ export {
     global info: table[string] of http_info; 
 }
 
-event bro_init() &priority=5 {
+event bro_init() {
     Log::create_stream(HTTPINFO::LOG, [$columns=http_info, $ev=log_HTTPINFO]);
 }
 
@@ -99,4 +90,3 @@ event conn_stats(c: connection, os: endpoint_stats, rs:endpoint_stats) {
         delete info[c$uid]; # Done with HTTP response for now, delete here or in conn_stats?
     }
 }
-

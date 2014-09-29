@@ -1,4 +1,5 @@
 module HTTPINFO;
+@load base/protocols/http
 
 export {
     redef enum Log::ID += { LOG };

@@ -1,6 +1,9 @@
 module HTTPINFO;
 @load base/protocols/http
 
+#Used for testing when generating traffic from localhost, diable otherwise
+redef ignore_checksums = T;
+
 export {
     redef enum Log::ID += { LOG };
 

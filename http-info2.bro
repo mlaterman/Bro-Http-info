@@ -25,12 +25,15 @@ export {
 event bro_init() {
     Log::create_stream(HTTPINFO::LOG, [$columns=http_info, $ev=log_HTTPINFO]);
     Analyzer::enable_analyzer(Analyzer::ANALYZER_TCPSTATS);
+    print "Bro Init!";
 }
 
 event http_request(c: connection, method: string, original_URI: string, unescaped_URI: string, version: string) {
+    print "  HTTP request";
     if(c$uid in info) {
         #request with the connection uid was made previously
     } else {
+	print "    New request!";
         local h_info: HTTPINFO::http_info; 
         h_info$uid = c$uid;
         h_info$req_start = c$start_time;
@@ -40,7 +43,9 @@ event http_request(c: connection, method: string, original_URI: string, unescape
 }
 
 event http_header(c: connection, is_orig: bool, name: string, value: string) {
+    print "  HTTP Header";
     if(c$uid in info) {
+        print "    Connection found";
         if(name == "CONTENT-TYPE") {
             local c_type = split1(value, /;/);
             if(|c_type| >= 1) {
@@ -66,7 +71,9 @@ event http_header(c: connection, is_orig: bool, name: string, value: string) {
 }
 
 event http_reply(c: connection, version: string, code: count, reason: string) {
+    print "  HTTP reply";
     if(c$uid in info) { # record response start and end time
+        print "    Connection found";
         local con = info[c$uid];
         con$res_start = c$start_time;
         con$res_end = c$start_time+c$duration;
@@ -94,7 +101,9 @@ event http_reply(c: connection, version: string, code: count, reason: string) {
 
 #This event does not seem to trigger
 event conn_stats(c: connection, os: endpoint_stats, rs:endpoint_stats) {
+    print " conn_stats... ";
     if(c$uid in info) {
+        print "    Connection found logging...";
         info[c$uid]$server_retrans = rs$num_rxmit;
         Log::write(HTTPINFO::LOG, info[c$uid]); # write record to log
         delete info[c$uid]; # Done with HTTP response for now, delete here or in conn_stats?

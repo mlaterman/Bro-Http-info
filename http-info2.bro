@@ -24,6 +24,7 @@ export {
 
 event bro_init() {
     Log::create_stream(HTTPINFO::LOG, [$columns=http_info, $ev=log_HTTPINFO]);
+    Analyzer::enable_analyzer(Analyzer::ANALYZER_TCPSTATS);
 }
 
 event http_request(c: connection, method: string, original_URI: string, unescaped_URI: string, version: string) {
@@ -84,6 +85,14 @@ event http_reply(c: connection, version: string, code: count, reason: string) {
 #    }
 #}
 
+#event http_stats(c: connection, stats: http_stats_rec) {
+#    if(c$uid in info) {
+#        Log::write(HTTPINFO::LOG, info[c$uid]);
+#        delete info[c$uid];
+#    }
+#}
+
+#This event does not seem to trigger
 event conn_stats(c: connection, os: endpoint_stats, rs:endpoint_stats) {
     if(c$uid in info) {
         info[c$uid]$server_retrans = rs$num_rxmit;

@@ -4,12 +4,13 @@ Bro script to gather extra data about http connections.
 
 Original version written by Phillipa Gill (2008)
 
-Script updated to compile against Bro 2.3
-
 Updated version includes a new record type for logging (logging not completly implemented in this version)
 
-http-info2.bro
+http-info.bro
 
 New version of script that only collects data not present in bro's default http.log and puts it into a new output log
 
-added module functionality to v2 (not tested yet)
+added module functionality to v2
+
+http-info2.bro attempts to add the extended information to http.log by extending the HTTP::Info records
+

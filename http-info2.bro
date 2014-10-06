@@ -5,8 +5,6 @@ module HTTPINFO;
 redef ignore_checksums = T;
 
 export {
-    #redef enum Log::ID += { LOG };
-
     redef  HTTP::Info += {
         req_start:      time    &log &default=double_to_time(0.0);
         req_end:        time    &log &default=double_to_time(0.0);
@@ -34,7 +32,6 @@ export {
         location:       string  &log &default="ND";
     };
 
-    global log_HTTPINFO: event(rec: http_info);
     global info: table[string] of http_info;
 }
 
@@ -45,7 +42,7 @@ event bro_init() {
 event http_request(c: connection, method: string, original_URI: string, unescaped_URI: string, version: string) {
     if(c$uid in info) {
        info[c$uid]$req_start = c$start_time;
-	   info[c$uid]$req_end = c$start_time + c$duration;
+       info[c$uid]$req_end = c$start_time + c$duration;
     } else {
         local h_info: HTTPINFO::http_info;
         h_info$uid = c$uid;
@@ -83,15 +80,14 @@ event http_header(c: connection, is_orig: bool, name: string, value: string) {
 
 event http_reply(c: connection, version: string, code: count, reason: string) {
     if(c$uid in info) { # record response start and end time
-        local con = info[c$uid];
-        con$res_start = c$start_time;
-        con$res_end = c$start_time+c$duration;
+        info[c$uid]$res_start = c$start_time;
+        info[c$uid]$res_end = c$start_time+c$duration;
     } else {
         local h_info: HTTPINFO::http_info;
         h_info$uid = c$uid;
-	    h_info$res_start = c$start_time;
-		h_info$res_end = c$start_time + c$duration;
-		info[c$uid] = h_info;
+        h_info$res_start = c$start_time;
+        h_info$res_end = c$start_time + c$duration;
+        info[c$uid] = h_info;
     }
 }
 
@@ -103,18 +99,17 @@ event conn_stats(c: connection, os: endpoint_stats, rs:endpoint_stats) {
 }
 
 event HTTP::log_http(rec: HTTP::Info) {
-	if(rec$uid in info) {
-		local hInfo = info[rec$uid];
-		rec$req_start = hInfo$req_start;
-		rec$req_end = hInfo$req_end;
-		rec$res_start = hInfo$res_start;
-		rec$res_end = hInfo$res_end;
-		rec$server_retrans = hInfo$server_retrans;
-		rec$content_type = hInfo$content_type;
-		rec$no_cache = hInfo$no_cache;
-		rec$no_store = hInfo$no_store;
-		rec$public = hInfo$public;
-		rec$location = hInfo$location;
+    if(rec$uid in info) {
+        rec$req_start      = info[rec$uid]$req_start;
+        rec$req_end        = info[rec$uid]$req_end;
+        rec$res_start      = info[rec$uid]$res_start;
+        rec$res_end        = info[rec$uid]$res_end;
+        rec$server_retrans = info[rec$uid]$server_retrans;
+        rec$content_type   = info[rec$uid]$content_type;
+        rec$no_cache       = info[rec$uid]$no_cache;
+        rec$no_store       = info[rec$uid]$no_store;
+        rec$public         = info[rec$uid]$public;
+        rec$location       = info[rec$uid]$location;
         delete info[c$uid];
-	}
+    }
 }

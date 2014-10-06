@@ -33,7 +33,7 @@ event bro_init() {
 event http_request(c: connection, method: string, original_URI: string, unescaped_URI: string, version: string) {
     if(c$uid in info) {
        info[c$uid]$req_start = c$start_time;
-	   info[c$uid]$req_end = c$start_time + c$duration;
+       info[c$uid]$req_end = c$start_time + c$duration;
     } else {
         local h_info: HTTPINFO::http_info;
         h_info$uid = c$uid;
@@ -71,15 +71,14 @@ event http_header(c: connection, is_orig: bool, name: string, value: string) {
 
 event http_reply(c: connection, version: string, code: count, reason: string) {
     if(c$uid in info) { # record response start and end time
-        local con = info[c$uid];
-        con$res_start = c$start_time;
-        con$res_end = c$start_time+c$duration;
+        info[c$uid]$res_start = c$start_time;
+        info[c$uid]$res_end = c$start_time+c$duration;
     } else {
         local h_info: HTTPINFO::http_info;
         h_info$uid = c$uid;
-	    h_info$res_start = c$start_time;
-		h_info$res_end = c$start_time + c$duration;
-		info[c$uid] = h_info;
+        h_info$res_start = c$start_time;
+        h_info$res_end = c$start_time + c$duration;
+        info[c$uid] = h_info;
     }
 }
 

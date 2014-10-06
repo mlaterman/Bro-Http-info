@@ -110,6 +110,6 @@ event HTTP::log_http(rec: HTTP::Info) {
         rec$no_store       = info[rec$uid]$no_store;
         rec$public         = info[rec$uid]$public;
         rec$location       = info[rec$uid]$location;
-        delete info[c$uid];
+        delete info[rec$uid];
     }
 }

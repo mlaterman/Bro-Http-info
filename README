@@ -4,13 +4,28 @@ Bro script to gather extra data about http connections.
 
 Original version written by Phillipa Gill (2008)
 
-Updated version includes a new record type for logging (logging not completly implemented in this version)
+Updated version includes a new record type for logging 
 
 http-info.bro
 
 New version of script that only collects data not present in bro's default http.log and puts it into a new output log
+A table based on conn$uid is used to track connections - as multiple req+res pairs can use the same conn it is possible for the httpinfo.log file to have less entries than the http.log file
 
 added module functionality to v2
 
 http-info2.bro attempts to add the extended information to http.log by extending the HTTP::Info records
+Additional information is logged directly to the http.log file
+
+Additional fields:
+attribute name     type     description
+req_start          time     request start time
+req_end            time     request end time
+res_start          time     response start time
+res_end            time     response end time
+server_restrans    count    number of server retransmissions (in packets)
+content_type       string   value of the content-type header or NONE if header does not exist
+no_cache           bool     if the cache control header disallows caching
+no_store           bool     if the cache control header disallows storage
+public             bool     if the cache control header specifies private data
+location           string   value of the location header
 

@@ -58,8 +58,9 @@ event http_reply(c: connection, version: string, code: count, reason: string) {
 }
 
 #This event does not seem to trigger all the time
-#TODO: alter this event so it only tries to add information to http entries
 event conn_stats(c: connection, os: endpoint_stats, rs:endpoint_stats) {
-    c$http$server_retrans = rs$num_rxmit;
+    if(c?$http) {
+        c$http$server_retrans = rs$num_rxmit;
+    }
 }
 

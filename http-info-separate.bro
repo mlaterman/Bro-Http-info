@@ -32,13 +32,11 @@ event bro_init() {
 
 event http_request(c: connection, method: string, original_URI: string, unescaped_URI: string, version: string) {
     if(c$uid in info) {
-       info[c$uid]$req_start = c$start_time;
-       info[c$uid]$req_end = c$start_time + c$duration;
+       info[c$uid]$req_start = network_time();
     } else {
         local h_info: HTTPINFO::http_info;
         h_info$uid = c$uid;
-        h_info$req_start = c$start_time;
-        h_info$req_end = c$start_time+c$duration;
+        h_info$req_start = network_time();
         info[c$uid] = h_info;
     }
 }
@@ -71,15 +69,21 @@ event http_header(c: connection, is_orig: bool, name: string, value: string) {
 
 event http_reply(c: connection, version: string, code: count, reason: string) {
     if(c$uid in info) {
-        info[c$uid]$res_start = c$start_time;
-        info[c$uid]$res_end = c$start_time+c$duration;
+        info[c$uid]$res_start = network_time();
     } else {
         local h_info: HTTPINFO::http_info;
         h_info$uid = c$uid;
-        h_info$res_start = c$start_time;
-        h_info$res_end = c$start_time + c$duration;
+        h_info$res_start = network_time();
         info[c$uid] = h_info;
     }
+}
+
+event http_end_entity(c: connection, is_orig: bool) {
+    if(is_orig) {
+        info[c$uid]$req_end = network_time();
+	} else {
+        info[c$uid]$res_end = network_time();
+	}
 }
 
 #Al multiple request/responses can use the same connection an entry in the httpinfo log is

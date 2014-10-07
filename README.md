@@ -1,20 +1,25 @@
-#http-info
+http-info
+==============
 
 Bro script to gather extra data about http connections.
 
-Original version written by Phillipa Gill (2008)
+Original version written by Phillipa Gill (2008).
 
-Updated version by Michel Laterman (2014)
+Updated version by Michel Laterman (2014).
 
-##http-info.bro
+http-info.bro
+---------------
 
 http-info.bro adds information to http.log by extending the HTTP::Info records. Additional information is logged directly to the http.log file. Extra fields that are generated are listed below.
 
-##http-info-separate.bro
+http-info-separate.bro
+------------------------
 
 http-info-separate.bro collects data not present in bro's default http.log and puts it into a new output log. A table based on conn$uid is used to track connections - as multiple req+res pairs can use the same conn it is possible for the httpinfo.log file to have less entries than the http.log file; in the implemenation this is because a connection-level event is used to write to the log and earse terminated connections.
 
-##Additional fields
+Additional fields
+-------------------
+
 attribute name   |  type   |  default  | description
 -----------------|---------|-----------|-----------------
 req_start        |  time   |  0        | request start time

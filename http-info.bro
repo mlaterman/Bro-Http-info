@@ -23,8 +23,7 @@ event bro_init() {
 }
 
 event http_request(c: connection, method: string, original_URI: string, unescaped_URI: string, version: string) {
-   c$http$req_start = network_time(); #c$start_time;
-   #c$http$req_end = c$start_time + c$duration;
+   c$http$req_start = network_time();
 }
 
 event http_header(c: connection, is_orig: bool, name: string, value: string) {
@@ -52,17 +51,8 @@ event http_header(c: connection, is_orig: bool, name: string, value: string) {
 }
 
 event http_reply(c: connection, version: string, code: count, reason: string) {
-    c$http$res_start = network_time(); #c$start_time;
-    #c$http$res_end = c$start_time+c$duration;
+    c$http$res_start = network_time();
 }
-
-#event http_message_done(c: connection, is_orig: bool, stat: http_message_stat) {
-#    if(is_orig) {
-#        c$http$req_end = stat$start;
-#	} else {
-#        c$http$req_end = stat$start;
-#	}
-#}
 
 event http_end_entity(c: connection, is_orig: bool) {
     if(is_orig) {
